@@ -2,6 +2,7 @@ package board.obj.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,6 +22,7 @@ public class Search {
 
    private Statement stmt;
    private Statement stmt2;
+   private  PreparedStatement pstmt;
    private String sql;
    private String sql2;
    private ResultSet rs;
@@ -38,15 +40,20 @@ public class Search {
    
    
    public void boardSearchQuery() throws SQLException{
-      conn = Register.getConnection();
-      stmt = conn.createStatement();
-      sql = "select * from boardsanga where title like '%" + titleSearch + "%'";
+	   sql = "select * from boardsanga where title like %?%";
+	   pstmt = conn.prepareStatement(sql); 
+	   pstmt.setString(1, titleSearch);
+	   
+//      conn = Register.getConnection();
+//      stmt = conn.createStatement();
+//      sql = "select * from boardsanga where title like '%" + titleSearch + "%'";
       
       
    }
    public void boardSearchExecuter() throws SQLException{
-      rs = stmt.executeQuery(sql);
-   }
+//      rs = stmt.executeQuery(sql);
+      ResultSet rs = pstmt.executeQuery();
+    }
    
    
    public void boardSearchProsess() throws SQLException{      
@@ -58,14 +65,18 @@ public class Search {
          nal = rs.getString("nal");
          readcount = rs.getInt("readcount");
          System.out.print(no + "\t" + title + "\t" + content + "\t" + author + "\t" + nal + "\t" + readcount + "\n");
-      }
+      } 
    }
    
    
    public void boardSearchReadcount() throws SQLException {
-      stmt2 = conn.createStatement();
-      sql2 = "update boardsanga set readcount=readcount+1 where title like '%" + titleSearch + "%'";
-      cnt = stmt2.executeUpdate(sql2);   
+	   sql2 = "update boardsanga set readcount=readcount+1 where title like %?%";
+	   pstmt = conn.prepareStatement(sql); 
+	   pstmt.setString(1, titleSearch);
+	   cnt = pstmt.executeUpdate();
+//      stmt2 = conn.createStatement();
+//      sql2 = "update boardsanga set readcount=readcount+1 where title like '%" + titleSearch + "%'";
+//      cnt = stmt2.executeUpdate(sql2);   
       
    }
 //   public static void main(String[] args) {

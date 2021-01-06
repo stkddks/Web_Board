@@ -2,9 +2,12 @@ package board.obj.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
+
+//import sun.jvm.hotspot.debugger.win32.coff.WindowsNTSubsystem;
 
 public class Register {
    
@@ -20,6 +23,7 @@ public class Register {
    private int readcount;
       
    private Statement stmt;
+   private PreparedStatement pstmt ;
    private String sql;
    private int cnt; 
 
@@ -72,13 +76,23 @@ public class Register {
    }
    
    public void boardQuery() throws SQLException{   //sql   
-      stmt = conn.createStatement();      
-      sql = "insert into boardsanga (title, content, author,nal,readcount) values('" + title + "', '" + content + "', '" + author + "', '" + nal + "', " + readcount + ")";
+	   // PreparedStatement 를 쓸때 
+	   sql = "insert into boardsanga (title, content, author,nal,readcount) values(?,?,?,?,?)";
+	   PreparedStatement pstmt = conn.prepareStatement(sql); 
+	   pstmt.setString(1, title);
+	   pstmt.setString(2, content);
+	   pstmt.setString(3, author);
+	   pstmt.setString(4, nal);
+	   pstmt.setInt(5, readcount);
+	   
+	   // Statement 를 쓸때 
+//      stmt = conn.createStatement();     
+//      sql = "insert into boardsanga (title, content, author,nal,readcount) values('" + title + "', '" + content + "', '" + author + "', '" + nal + "', " + readcount + ")";
    }
    
    public void boardExecuter() throws SQLException{   // sql실행
-      
-      cnt = stmt.executeUpdate(sql);
+      cnt = pstmt.executeUpdate();
+//      cnt = stmt.executeUpdate(sql);
       System.out.println(cnt+"긴 게시글이 등록되었습니다.");
    }
 }

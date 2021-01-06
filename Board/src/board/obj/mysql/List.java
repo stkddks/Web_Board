@@ -2,6 +2,7 @@ package board.obj.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,20 +21,14 @@ private Connection conn;      // 파라미터에 있던 아이들은 클래스 �
    private Statement stmt;
    private String sql;
    private ResultSet rs;
+   private  PreparedStatement pstmt;
+	
+
    
    public List() {
       
    }
-   
-//   public Connection getConnection() throws SQLException{
-//      try {
-//         Class.forName("oracle.jdbc.driver.OracleDriver");
-//      } catch (ClassNotFoundException e) {
-//         e.printStackTrace();
-//      }
-//      conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:XE", "khbclass", "dkdlxl");
-//      return conn;
-//   }
+ 
    
    public void boardListTitle() {
       System.out.println("======전체 게시물 출력=======");
@@ -41,14 +36,19 @@ private Connection conn;      // 파라미터에 있던 아이들은 클래스 �
    }
    
    public void boardListQuery() throws SQLException{
-      conn = Register.getConnection();
-      stmt = conn.createStatement();
-      sql = "select * from boardsanga order by no asc";      // 내림차순은 desc
+	   sql = "select * from boardsanga order by no asc";      // 내림차순은 desc
+	  PreparedStatement pstmt = conn.prepareStatement(sql);
+	   
+//      conn = Register.getConnection();
+//      stmt = conn.createStatement();
+//      sql = "select * from boardsanga order by no asc";      // 내림차순은 desc
    }
    
    public void boardListExcuter() throws SQLException{
-      rs = stmt.executeQuery(sql);      
+	   rs = pstmt.executeQuery();      
+//      rs = stmt.executeQuery(sql);      
    }
+   
    public void boardListProcess() throws SQLException{
       while (rs.next()) {
          no = rs.getInt("no");
@@ -61,17 +61,4 @@ private Connection conn;      // 파라미터에 있던 아이들은 클래스 �
       }      
    }
    
-//   public static void main(String[] args) {
-//      
-//      List li = new List();
-//      li.boardListTitle();
-//      try {
-//         li.boardListQuery();
-//         li.boardListExcuter();
-//         li.boardListProcess();
-//      } catch (SQLException e) {
-//         // TODO Auto-generated catch block
-//         e.printStackTrace();
-//      }
-//   }
 }
